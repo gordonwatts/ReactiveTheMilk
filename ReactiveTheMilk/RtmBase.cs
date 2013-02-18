@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reactive.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
+#if NETFX_CORE
+#else
 using Codeplex.Reactive.Asynchronous;
+using System.Security.Cryptography;
+#endif
 
 namespace ReactiveTheMilk
 {

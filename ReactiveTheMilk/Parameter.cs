@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if NETFX_CORE
+using System.Net;
+#else
 using System.Web;
+#endif
 
 namespace ReactiveTheMilk
 {
@@ -35,9 +39,15 @@ namespace ReactiveTheMilk
 		/// <returns></returns>
 		public static String ToPostData(this IEnumerable<Parameter> parameters)
 		{
-			return parameters
+#if NETFX_CORE
+            return parameters
+                .Select(x => WebUtility.UrlEncode(x.Key) + "=" + WebUtility.UrlEncode(x.Value))
+                .Join("&");
+#else
+            return parameters
 				.Select(x => HttpUtility.UrlEncode(x.Key) + "=" + HttpUtility.UrlEncode(x.Value))
 				.Join("&");
+#endif
 		}
 	}
 }

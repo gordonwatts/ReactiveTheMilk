@@ -120,6 +120,9 @@
     <Compile Include="..\ReactiveTheMilk\RtmUser.cs">
       <Link>RtmUser.cs</Link>
     </Compile>
+    <Compile Include="..\ReactiveTheMilk\SignatureGenerator.cs">
+      <Link>SignatureGenerator.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

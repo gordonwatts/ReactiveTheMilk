@@ -2,7 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if NETFX_CORE
+using Windows.Security.Cryptography.Core;
+using Windows.Storage.Streams;
+using Windows.Security.Cryptography;
+#else
 using System.Security.Cryptography;
+#endif
 
 namespace ReactiveTheMilk
 {
@@ -35,11 +41,23 @@ namespace ReactiveTheMilk
         .Concat();
 
       string signatureSource = secret + orderedFlattenedParameters;
+#if NETFX_CORE
+      HashAlgorithmProvider objAlgProv = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);
+      CryptographicHash objHash = objAlgProv.CreateHash();
+
+      IBuffer buffMsg1 = CryptographicBuffer.ConvertStringToBinary(signatureSource, BinaryStringEncoding.Utf8);
+      objHash.Append(buffMsg1);
+      IBuffer buffHash1 = objHash.GetValueAndReset();
+
+      String hash = CryptographicBuffer.EncodeToHexString(buffHash1);
+      return hash;
+#else
       using (var md5 = MD5.Create())
       {
-        byte[] md5HashedBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(signatureSource));
-        return BitConverter.ToString(md5HashedBytes).ToLower().Replace("-", "");
+        byte[] md5sumBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(signatureSource));
+        return BitConverter.ToString(md5sumBytes).ToLower().Replace("-", "");
       }
+#endif
     }
   }
 }
